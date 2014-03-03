@@ -31,13 +31,13 @@ The WordPress KEYWORD plugin, Legal Document Deliveries - Core, TBD.
 
 = Legal Document Deliveries - Core Premium =
 
-[Buy Legal Document Deliveries - Core Premium](http://aihr.us/products/ldd-deliveries-premium-wordpress-plugin/) plugin for WordPress.
+[Buy Legal Document Deliveries - Core Premium](http://aihr.us/products/ldd-premium-wordpress-plugin/) plugin for WordPress.
 
 = Primary Premium Features =
 
 * TBD
 
-[Buy Legal Document Deliveries - Core Premium](http://aihr.us/products/ldd-deliveries-premium-wordpress-plugin/) plugin for WordPress.
+[Buy Legal Document Deliveries - Core Premium](http://aihr.us/products/ldd-premium-wordpress-plugin/) plugin for WordPress.
 
 = Shortcodes =
 
@@ -59,7 +59,7 @@ The WordPress KEYWORD plugin, Legal Document Deliveries - Core, TBD.
 
 **General**
 
-* Enable Paging? - For `[ldd_deliveries_widget_list]`
+* Enable Paging? - For `[ldd_widget_list]`
 	* Disable – Don't display paging
 	* Enable – display paging before and after post entries
 	* Before – display paging only before post entries
@@ -91,13 +91,13 @@ The WordPress KEYWORD plugin, Legal Document Deliveries - Core, TBD.
 * Through WordPress Admin > Plugins > Add New, Search for "Legal Document Deliveries - Core"
 	* Find "Legal Document Deliveries - Core"
 	* Click "Install Now" of "Legal Document Deliveries - Core"
-* Download [`ldd-deliveries.zip`](http://downloads.wordpress.org/plugin/ldd-deliveries.zip) locally
+* Download [`ldd.zip`](http://downloads.wordpress.org/plugin/ldd.zip) locally
 	* Through WordPress Admin > Plugins > Add New
 	* Click Upload
-	* "Choose File" `ldd-deliveries.zip`
+	* "Choose File" `ldd.zip`
 	* Click "Install Now"
-* Download and unzip [`ldd-deliveries.zip`](http://downloads.wordpress.org/plugin/ldd-deliveries.zip) locally
-	* Using FTP, upload directory `ldd-deliveries` to your website's `/wp-content/plugins/` directory
+* Download and unzip [`ldd.zip`](http://downloads.wordpress.org/plugin/ldd.zip) locally
+	* Using FTP, upload directory `ldd` to your website's `/wp-content/plugins/` directory
 
 = Activation Options =
 
@@ -115,9 +115,9 @@ The WordPress KEYWORD plugin, Legal Document Deliveries - Core, TBD.
 	* Via WordPress Admin > Dashboard > Updates, click "Check Again"
 	* Select plugins for update, click "Update Plugins"
 * Using FTP
-	* Download and unzip [`ldd-deliveries.zip`](http://downloads.wordpress.org/plugin/ldd-deliveries.zip) locally
-	* Upload directory `ldd-deliveries` to your website's `/wp-content/plugins/` directory
-	* Be sure to overwrite your existing `ldd-deliveries` folder contents
+	* Download and unzip [`ldd.zip`](http://downloads.wordpress.org/plugin/ldd.zip) locally
+	* Upload directory `ldd` to your website's `/wp-content/plugins/` directory
+	* Be sure to overwrite your existing `ldd` folder contents
 
 
 == Frequently Asked Questions ==
@@ -131,9 +131,9 @@ The WordPress KEYWORD plugin, Legal Document Deliveries - Core, TBD.
 = Still Stuck or Want Something Done? Get Support! =
 
 1. [Legal Document Deliveries - Core Knowledge Base](https://aihrus.zendesk.com/categories/20102742) - read and comment upon frequently asked questions
-1. [Open Legal Document Deliveries - Core Issues](https://github.com/michael-cannon/ldd-deliveries/issues) - review and submit bug reports and enhancement requests
-1. [Legal Document Deliveries - Core Support on WordPress](http://wordpress.org/support/plugin/ldd-deliveries) - ask questions and review responses
-1. [Contribute Code to Legal Document Deliveries - Core](https://github.com/michael-cannon/ldd-deliveries/blob/master/CONTRIBUTING.md)
+1. [Open Legal Document Deliveries - Core Issues](https://github.com/michael-cannon/ldd/issues) - review and submit bug reports and enhancement requests
+1. [Legal Document Deliveries - Core Support on WordPress](http://wordpress.org/support/plugin/ldd) - ask questions and review responses
+1. [Contribute Code to Legal Document Deliveries - Core](https://github.com/michael-cannon/ldd/blob/master/CONTRIBUTING.md)
 1. [Beta Testers Needed](http://aihr.us/become-beta-tester/) - get the latest Legal Document Deliveries - Core version
 
 
@@ -146,7 +146,7 @@ The WordPress KEYWORD plugin, Legal Document Deliveries - Core, TBD.
 
 == Changelog ==
 
-See [CHANGELOG](https://github.com/michael-cannon/ldd-deliveries/blob/master/CHANGELOG.md)
+See [CHANGELOG](https://github.com/michael-cannon/ldd/blob/master/CHANGELOG.md)
 
 
 == Upgrade Notice ==
@@ -163,12 +163,12 @@ See [CHANGELOG](https://github.com/michael-cannon/ldd-deliveries/blob/master/CHA
 
 == API ==
 
-* Read the [Legal Document Deliveries - Core API](https://github.com/michael-cannon/ldd-deliveries/blob/master/API.md).
+* Read the [Legal Document Deliveries - Core API](https://github.com/michael-cannon/ldd/blob/master/API.md).
 
 
 == Localization ==
 
-You can translate this plugin into your own language if it's not done so already. The localization file `ldd-deliveries.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://aihr.us/contact-aihrus/) for plugin inclusion.
+You can translate this plugin into your own language if it's not done so already. The localization file `ldd.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://aihr.us/contact-aihrus/) for plugin inclusion.
 
 **[How do I localize?](https://aihrus.zendesk.com/entries/23691557)**
 

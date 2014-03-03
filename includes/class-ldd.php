@@ -13,21 +13,21 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-require_once LDD_DELIVERIES_DIR_LIB . 'aihrus-framework/class-aihrus-common.php';
-require_once LDD_DELIVERIES_DIR_INC . 'class-ldd-deliveries-settings.php';
-require_once LDD_DELIVERIES_DIR_INC . 'class-ldd-deliveries-widget.php';
+require_once LDD_DIR_LIB . 'aihrus-framework/class-aihrus-common.php';
+require_once LDD_DIR_INC . 'class-ldd-settings.php';
+require_once LDD_DIR_INC . 'class-ldd-widget.php';
 
-if ( class_exists( 'LDD_Deliveries' ) )
+if ( class_exists( 'LDD' ) )
 	return;
 
 
-class LDD_Deliveries extends Aihrus_Common {
-	const BASE    = LDD_DELIVERIES_BASE;
-	const ID      = 'ldd-deliveries';
-	const SLUG    = 'ldd_deliveries_';
-	const VERSION = LDD_DELIVERIES_VERSION;
+class LDD extends Aihrus_Common {
+	const BASE    = LDD_BASE;
+	const ID      = 'ldd';
+	const SLUG    = 'ldd_';
+	const VERSION = LDD_VERSION;
 
-	const PT = 'ldd-deliveries';
+	const PT = 'ldd';
 
 	public static $class        = __CLASS__;
 	public static $cpt_category = '';
@@ -53,7 +53,7 @@ class LDD_Deliveries extends Aihrus_Common {
 		// fixme add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		add_action( 'init', array( __CLASS__, 'init' ) );
 		// fixme add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
-		add_shortcode( 'ldd_deliveries_shortcode', array( __CLASS__, 'ldd_deliveries_shortcode' ) );
+		add_shortcode( 'ldd_shortcode', array( __CLASS__, 'ldd_shortcode' ) );
 	}
 
 
@@ -64,12 +64,12 @@ class LDD_Deliveries extends Aihrus_Common {
 		add_filter( 'plugin_action_links', array( __CLASS__, 'plugin_action_links' ), 10, 2 );
 		add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
 
-		self::$settings_link = '<a href="' . get_admin_url() . 'edit.php?post_type=' . self::PT . '&page=' . LDD_Deliveries_Settings::ID . '">' . __( 'Settings', 'ldd-deliveries' ) . '</a>';
+		self::$settings_link = '<a href="' . get_admin_url() . 'edit.php?post_type=' . self::PT . '&page=' . LDD_Settings::ID . '">' . __( 'Settings', 'ldd' ) . '</a>';
 	}
 
 
 	public static function admin_menu() {
-		self::$menu_id = add_management_page( esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd-deliveries' ), esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd-deliveries' ), 'manage_options', self::ID, array( __CLASS__, 'user_interface' ) );
+		self::$menu_id = add_management_page( esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd' ), esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd' ), 'manage_options', self::ID, array( __CLASS__, 'user_interface' ) );
 
 		add_action( 'admin_print_scripts-' . self::$menu_id, array( __CLASS__, 'scripts' ) );
 		add_action( 'admin_print_styles-' . self::$menu_id, array( __CLASS__, 'styles' ) );
@@ -77,7 +77,7 @@ class LDD_Deliveries extends Aihrus_Common {
 
 
 	public static function init() {
-		load_plugin_textdomain( self::ID, false, 'ldd-deliveries/languages' );
+		load_plugin_textdomain( self::ID, false, 'ldd/languages' );
 
 		add_action( 'wp_ajax_ajax_process_post', array( __CLASS__, 'ajax_process_post' ) );
 
@@ -93,7 +93,7 @@ class LDD_Deliveries extends Aihrus_Common {
 		if ( self::BASE == $file ) {
 			array_unshift( $links, self::$settings_link );
 
-			// fixme $link = '<a href="' . get_admin_url() . 'tools.php?page=' . self::ID . '">' . esc_html__( 'Process', 'ldd-deliveries' ) . '</a>';
+			// fixme $link = '<a href="' . get_admin_url() . 'tools.php?page=' . self::ID . '">' . esc_html__( 'Process', 'ldd' ) . '</a>';
 			// fixme array_unshift( $links, $link );
 		}
 
@@ -119,11 +119,11 @@ class LDD_Deliveries extends Aihrus_Common {
 
 		global $wpdb;
 		
-		require_once LDD_DELIVERIES_DIR_INC . 'class-ldd-deliveries-settings.php';
+		require_once LDD_DIR_INC . 'class-ldd-settings.php';
 
-		$delete_data = ldd_deliveries_get_option( 'delete_data', false );
+		$delete_data = ldd_get_option( 'delete_data', false );
 		if ( $delete_data ) {
-			delete_option( LDD_Deliveries_Settings::ID );
+			delete_option( LDD_Settings::ID );
 			$wpdb->query( 'OPTIMIZE TABLE `' . $wpdb->options . '`' );
 		}
 	}
@@ -133,7 +133,7 @@ class LDD_Deliveries extends Aihrus_Common {
 		if ( self::BASE != $file )
 			return $input;
 
-		$disable_donate = ldd_deliveries_get_option( 'disable_donate', true );
+		$disable_donate = ldd_get_option( 'disable_donate', true );
 		if ( $disable_donate )
 			return $input;
 
@@ -148,7 +148,7 @@ class LDD_Deliveries extends Aihrus_Common {
 
 
 	public static function notice_0_0_1() {
-		$text = sprintf( __( 'If your Legal Document Deliveries - Core display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'ldd-deliveries' ), 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' );
+		$text = sprintf( __( 'If your Legal Document Deliveries - Core display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'ldd' ), 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' );
 
 		aihr_notice_updated( $text );
 	}
@@ -160,29 +160,29 @@ class LDD_Deliveries extends Aihrus_Common {
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public static function notice_donate( $disable_donate = null, $item_name = null ) {
-		$disable_donate = ldd_deliveries_get_option( 'disable_donate', true );
+		$disable_donate = ldd_get_option( 'disable_donate', true );
 
-		parent::notice_donate( $disable_donate, LDD_DELIVERIES_NAME );
+		parent::notice_donate( $disable_donate, LDD_NAME );
 	}
 
 
 	public static function update() {
-		$prior_version = ldd_deliveries_get_option( 'admin_notices' );
+		$prior_version = ldd_get_option( 'admin_notices' );
 		if ( $prior_version ) {
 			if ( $prior_version < '0.0.1' )
 				add_action( 'admin_notices', array( __CLASS__, 'notice_0_0_1' ) );
 
 			if ( $prior_version < self::VERSION )
-				do_action( 'ldd_deliveries_update' );
+				do_action( 'ldd_update' );
 
-			ldd_deliveries_set_option( 'admin_notices' );
+			ldd_set_option( 'admin_notices' );
 		}
 
 		// display donate on major/minor version release
-		$donate_version = ldd_deliveries_get_option( 'donate_version', false );
+		$donate_version = ldd_get_option( 'donate_version', false );
 		if ( ! $donate_version || ( $donate_version != self::VERSION && preg_match( '#\.0$#', self::VERSION ) ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'notice_donate' ) );
-			ldd_deliveries_set_option( 'donate_version', self::VERSION );
+			ldd_set_option( 'donate_version', self::VERSION );
 		}
 	}
 
@@ -194,12 +194,12 @@ class LDD_Deliveries extends Aihrus_Common {
 			// fixme wp_register_script( 'jquery-ui-progressbar', self::$plugin_assets . 'js/jquery.ui.progressbar.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget' ), '1.10.3' );
 			// fixme wp_enqueue_script( 'jquery-ui-progressbar' );
 
-			add_action( 'admin_footer', array( 'LDD_Deliveries', 'get_scripts' ) );
+			add_action( 'admin_footer', array( 'LDD', 'get_scripts' ) );
 		} else {
-			add_action( 'wp_footer', array( 'LDD_Deliveries', 'get_scripts' ) );
+			add_action( 'wp_footer', array( 'LDD', 'get_scripts' ) );
 		}
 
-		do_action( 'ldd_deliveries_scripts', $atts );
+		do_action( 'ldd_scripts', $atts );
 	}
 
 
@@ -208,19 +208,19 @@ class LDD_Deliveries extends Aihrus_Common {
 			// fixme wp_register_style( 'jquery-ui-progressbar', self::$plugin_assets . 'css/redmond/jquery-ui-1.10.3.custom.min.css', false, '1.10.3' );
 			// fixme wp_enqueue_style( 'jquery-ui-progressbar' );
 
-			add_action( 'admin_footer', array( 'LDD_Deliveries', 'get_styles' ) );
+			add_action( 'admin_footer', array( 'LDD', 'get_styles' ) );
 		} else {
-			wp_register_style( __CLASS__, self::$plugin_assets . 'css/ldd-deliveries.css' );
+			wp_register_style( __CLASS__, self::$plugin_assets . 'css/ldd.css' );
 			wp_enqueue_style( __CLASS__ );
 
-			add_action( 'wp_footer', array( 'LDD_Deliveries', 'get_styles' ) );
+			add_action( 'wp_footer', array( 'LDD', 'get_styles' ) );
 		}
 
-		do_action( 'ldd_deliveries_styles' );
+		do_action( 'ldd_styles' );
 	}
 
 
-	public static function ldd_deliveries_shortcode( $atts ) {
+	public static function ldd_shortcode( $atts ) {
 		self::call_scripts_styles( $atts );
 
 		return __CLASS__ . ' shortcode';
@@ -274,7 +274,7 @@ class LDD_Deliveries extends Aihrus_Common {
 		$do_load = false;
 		if ( ! empty( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], array( 'edit.php', 'options.php', 'plugins.php' ) ) ) {
 			$do_load = true;
-		} elseif ( ! empty( $_REQUEST['page'] ) && LDD_Deliveries_Settings::ID == $_REQUEST['page'] ) {
+		} elseif ( ! empty( $_REQUEST['page'] ) && LDD_Settings::ID == $_REQUEST['page'] ) {
 			$do_load = true;
 		} elseif ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 			$do_load = true;
@@ -285,15 +285,15 @@ class LDD_Deliveries extends Aihrus_Common {
 
 
 	public static function widgets_init() {
-		register_widget( 'LDD_Deliveries_Widget' );
+		register_widget( 'LDD_Widget' );
 	}
 
 
 	public static function get_defaults( $single_view = false ) {
 		if ( empty( $single_view ) )
-			return apply_filters( 'ldd_deliveries_defaults', ldd_deliveries_get_options() );
+			return apply_filters( 'ldd_defaults', ldd_get_options() );
 		else
-			return apply_filters( 'ldd_deliveries_defaults_single', ldd_deliveries_get_options() );
+			return apply_filters( 'ldd_defaults_single', ldd_get_options() );
 	}
 
 
@@ -328,7 +328,7 @@ class LDD_Deliveries extends Aihrus_Common {
 		self::register_taxonomies();
 
 		$args = array(
-			'label' => esc_html__( 'LDD Deliveries' ),
+			'label' => esc_html__( 'LDD Core' ),
 			'capability_type' => 'post',
 			'has_archive' => true,
 			'hierarchical' => false,

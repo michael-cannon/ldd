@@ -16,17 +16,17 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-require_once LDD_DELIVERIES_DIR_LIB . 'aihrus-framework/class-aihrus-widget.php';
+require_once LDD_DIR_LIB . 'aihrus-framework/class-aihrus-widget.php';
 
-if ( class_exists( 'LDD_Deliveries_Widget' ) )
+if ( class_exists( 'LDD_Widget' ) )
 	return;
 
 
-class LDD_Deliveries_Widget extends Aihrus_Widget {
-	const ID = 'ldd-deliveries-widget';
+class LDD_Widget extends Aihrus_Widget {
+	const ID = 'ldd-widget';
 
 	public function __construct( $classname = null, $description = null, $id_base = null, $title = null ) {
-		$classname   = 'LDD_Deliveries_Widget';
+		$classname   = 'LDD_Widget';
 		$description = esc_html__( 'Display Legal Document Deliveries - Core entries.' );
 		$id_base     = self::ID;
 		$title       = esc_html__( 'Legal Document Deliveries - Core' );
@@ -36,7 +36,7 @@ class LDD_Deliveries_Widget extends Aihrus_Widget {
 
 
 	public static function get_defaults() {
-		return LDD_Deliveries::get_defaults();
+		return LDD::get_defaults();
 	}
 
 
@@ -53,7 +53,7 @@ class LDD_Deliveries_Widget extends Aihrus_Widget {
 
 
 	public static function validate_settings( $instance ) {
-		return LDD_Deliveries_Settings::validate_settings( $instance );
+		return LDD_Settings::validate_settings( $instance );
 	}
 
 
@@ -75,7 +75,7 @@ class LDD_Deliveries_Widget extends Aihrus_Widget {
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public static function form_parts( $instance, $number ) {
-		$form_parts = LDD_Deliveries_Settings::get_settings();
+		$form_parts = LDD_Settings::get_settings();
 		$form_parts = self::widget_options( $form_parts );
 
 		return $form_parts;
@@ -84,7 +84,7 @@ class LDD_Deliveries_Widget extends Aihrus_Widget {
 
 	public static function widget_options( $options ) {
 		$options = parent::widget_options( $options );
-		$options = apply_filters( 'ldd_deliveries_widget_options', $options );
+		$options = apply_filters( 'ldd_widget_options', $options );
 
 		return $options;
 	}
