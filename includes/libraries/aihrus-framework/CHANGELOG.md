@@ -1,8 +1,15 @@
 # CHANGELOG Aihrus Framework
 
 ## master
+
+## 1.0.4RC1
+* Register `jquery-style`
+* Update copyright year
+
+## 1.0.3
+* RESOLVE Fatal error: Call to undefined function add_settings_error() in class-aihrus-settings.php on line 559
+* RESOLVE Featured image via Gravatar not saving correctly
 * Revise data deletion description - Thank you Mark
-* RESOLVE Fatal error: Call to undefined function add_settings_error() in …/includes/libraries/aihrus-framework/class-aihrus-settings.php on line 559
 
 ## 1.0.2
 * Add phpunit.xml
