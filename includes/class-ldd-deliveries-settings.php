@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyright 2013 Michael Cannon (email: mc@aihr.us)
+	Copyright 2014 Michael Cannon (email: mc@aihr.us)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License, version 2, as
@@ -69,7 +69,7 @@ class LDD_Deliveries_Settings extends Aihrus_Settings {
 
 
 	public static function admin_menu() {
-		self::$admin_page = add_options_page( esc_html__( 'Legal Document Deliveries - Core Settings', 'ldd-deliveries' ), esc_html__( 'Legal Document Deliveries - Core', 'ldd-deliveries' ), 'manage_options', self::ID, array( __CLASS__, 'display_page' ) );
+		self::$admin_page = add_submenu_page( 'edit.php?post_type=' . LDD_Deliveries::PT, esc_html__( 'Legal Document Deliveries - Core Settings', 'ldd-deliveries' ), esc_html__( 'Settings', 'ldd-deliveries' ), 'manage_options', self::ID, array( __CLASS__, 'display_page' ) );
 
 		add_action( 'admin_print_scripts-' . self::$admin_page, array( __CLASS__, 'scripts' ) );
 		add_action( 'admin_print_styles-' . self::$admin_page, array( __CLASS__, 'styles' ) );

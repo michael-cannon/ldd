@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2013 Michael Cannon (email: mc@aihr.us)
+ * Copyright 2014 Michael Cannon (email: mc@aihr.us)
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2, as
  * published by the Free Software Foundation.
@@ -27,9 +27,11 @@ class LDD_Deliveries extends Aihrus_Common {
 	const SLUG    = 'ldd_deliveries_';
 	const VERSION = LDD_DELIVERIES_VERSION;
 
-	private static $post_types;
+	const PT = 'ldd-deliveries';
 
-	public static $class = __CLASS__;
+	public static $class        = __CLASS__;
+	public static $cpt_category = '';
+	public static $cpt_tags     = '';
 	public static $menu_id;
 	public static $notice_key;
 	public static $plugin_assets;
@@ -61,7 +63,7 @@ class LDD_Deliveries extends Aihrus_Common {
 		add_filter( 'plugin_action_links', array( __CLASS__, 'plugin_action_links' ), 10, 2 );
 		add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
 
-		self::$settings_link = '<a href="' . get_admin_url() . 'options-general.php?page=' . LDD_Deliveries_Settings::ID . '">' . __( 'Settings', 'ldd-deliveries' ) . '</a>';
+		self::$settings_link = '<a href="' . get_admin_url() . 'edit.php?post_type=' . self::PT . '&page=' . LDD_Deliveries_Settings::ID . '">' . __( 'Settings', 'ldd-deliveries' ) . '</a>';
 	}
 
 
@@ -78,7 +80,10 @@ class LDD_Deliveries extends Aihrus_Common {
 
 		add_action( 'wp_ajax_ajax_process_post', array( __CLASS__, 'ajax_process_post' ) );
 
-		self::set_post_types();
+		self::$cpt_category = self::PT . '-category';
+		self::$cpt_tags     = self::PT . '-post_tag';
+
+		self::init_post_type();
 		self::styles();
 	}
 
@@ -141,14 +146,6 @@ class LDD_Deliveries extends Aihrus_Common {
 	}
 
 
-	public static function set_post_types() {
-		$post_types       = get_post_types( array( 'public' => true ), 'names' );
-		self::$post_types = array();
-		foreach ( $post_types as $post_type )
-			self::$post_types[] = $post_type;
-	}
-
-
 	public static function notice_0_0_1() {
 		$text = sprintf( __( 'If your Legal Document Deliveries - Core display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'ldd-deliveries' ), 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' );
 
@@ -162,7 +159,7 @@ class LDD_Deliveries extends Aihrus_Common {
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public static function notice_donate( $disable_donate = null, $item_name = null ) {
-		$disable_donate = ldd_deliveries_get_option( 'disable_donate' );
+		$disable_donate = ldd_deliveries_get_option( 'disable_donate', true );
 
 		parent::notice_donate( $disable_donate, LDD_DELIVERIES_NAME );
 	}
@@ -296,6 +293,78 @@ class LDD_Deliveries extends Aihrus_Common {
 			return apply_filters( 'ldd_deliveries_defaults', ldd_deliveries_get_options() );
 		else
 			return apply_filters( 'ldd_deliveries_defaults_single', ldd_deliveries_get_options() );
+	}
+
+
+	public static function init_post_type() {
+		$labels = array(
+			'add_new' => esc_html__( 'Add New' ),
+			'add_new_item' => esc_html__( 'Add New Delivery' ),
+			'edit_item' => esc_html__( 'Edit Delivery' ),
+			'name' => esc_html__( 'Deliveries' ),
+			'new_item' => esc_html__( 'Add New Delivery' ),
+			'not_found' => esc_html__( 'No deliveries found' ),
+			'not_found_in_trash' => esc_html__( 'No deliveries found in Trash' ),
+			'parent_item_colon' => null,
+			'search_items' => esc_html__( 'Search Deliveries' ),
+			'singular_name' => esc_html__( 'Delivery' ),
+			'view_item' => esc_html__( 'View Delivery' ),
+		);
+
+		$supports = array(
+			'title',
+			'editor',
+			'thumbnail',
+			'publicize',
+		);
+
+		// editor's and up
+		if ( current_user_can( 'edit_others_posts' ) )
+			$supports[] = 'author';
+
+		$taxonomies = array(
+			self::$cpt_category,
+			self::$cpt_tags,
+		);
+
+		self::register_taxonomies();
+
+		$args = array(
+			'label' => esc_html__( 'LDD Deliveries' ),
+			'capability_type' => 'post',
+			'has_archive' => true,
+			'hierarchical' => false,
+			'labels' => $labels,
+			'public' => true,
+			'publicly_queryable' => true,
+			'query_var' => true,
+			'rewrite' => array(
+				'slug' => 'delivery',
+				'with_front' => false,
+			),
+			'supports' => $supports,
+			'taxonomies' => $taxonomies,
+		);
+
+		register_post_type( self::PT, $args );
+
+		register_taxonomy_for_object_type( self::$cpt_category, self::PT );
+		register_taxonomy_for_object_type( self::$cpt_tags, self::PT );
+	}
+
+
+	public static function register_taxonomies() {
+		$args = array(
+			'hierarchical' => true,
+			'show_admin_column' => true,
+		);
+		register_taxonomy( self::$cpt_category, self::PT, $args );
+
+		$args = array(
+			'show_admin_column' => true,
+			'update_count_callback' => '_update_post_term_count',
+		);
+		register_taxonomy( self::$cpt_tags, self::PT, $args );
 	}
 
 
