@@ -1,26 +1,26 @@
 #!/bin/bash
 
-NEW_ABBR="LDD_DELIVERIES_"
-NEW_BASE="ldd-deliveries"
-NEW_CLASS="LDD_Deliveries"
+NEW_ABBR="LDD_"
+NEW_BASE="ldd"
+NEW_CLASS="LDD"
 NEW_FILTER="${NEW_ABBR,,}"
 NEW_KB_PATH=""
-NEW_SITE=""
+NEW_SITE="https://github.com/michael-cannon/ldd"
 NEW_SLUG="${NEW_FILTER}"
 NEW_SLUG_LONG="${NEW_BASE/-/_}"
 NEW_TITLE="Legal Document Deliveries - Core"
-NEW_TITLE_SHORT="LDD Deliveries"
+NEW_TITLE_SHORT="LDD Core"
 
-OLD_ABBR="WPS_"
-OLD_BASE="wordpress-starter"
-OLD_CLASS="WordPress_Starter"
+OLD_ABBR="LDD_DELIVERIES_"
+OLD_BASE="ldd-deliveries"
+OLD_CLASS="LDD_Deliveries"
 OLD_FILTER="${OLD_ABBR,,}"
 OLD_KB_PATH="20102742"
-OLD_SITE="http://wordpress.org/plugins/${OLD_BASE}/"
+OLD_SITE="http://wordpress.org/plugins/ldd-deliveries/"
 OLD_SLUG="${OLD_FILTER}"
 OLD_SLUG_LONG="${OLD_BASE/-/_}"
-OLD_TITLE="WordPress Starter"
-OLD_TITLE_SHORT="${OLD_TITLE}"
+OLD_TITLE="Legal Document Deliveries - Core"
+OLD_TITLE_SHORT="LDD Deliveries"
 
 echo
 echo "Begin converting ${OLD_TITLE} to ${NEW_TITLE} plugin"
@@ -92,6 +92,8 @@ mv includes/class-${OLD_BASE}-settings.php includes/class-${NEW_BASE}-settings.p
 mv includes/class-${OLD_BASE}-widget.php includes/class-${NEW_BASE}-widget.php
 mv includes/class-${OLD_BASE}.php includes/class-${NEW_BASE}.php
 mv languages/${OLD_BASE}.pot languages/${NEW_BASE}.pot
+
+exit
 
 if [[ -e .git ]]
 then
