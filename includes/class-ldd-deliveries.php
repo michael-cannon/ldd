@@ -58,6 +58,7 @@ class LDD_Deliveries extends Aihrus_Common {
 
 
 	public static function admin_init() {
+		self::support_thumbnails();
 		self::update();
 
 		add_filter( 'plugin_action_links', array( __CLASS__, 'plugin_action_links' ), 10, 2 );
@@ -315,12 +316,9 @@ class LDD_Deliveries extends Aihrus_Common {
 			'title',
 			'editor',
 			'thumbnail',
+			'comments',
 			'publicize',
 		);
-
-		// editor's and up
-		if ( current_user_can( 'edit_others_posts' ) )
-			$supports[] = 'author';
 
 		$taxonomies = array(
 			self::$cpt_category,
@@ -365,6 +363,24 @@ class LDD_Deliveries extends Aihrus_Common {
 			'update_count_callback' => '_update_post_term_count',
 		);
 		register_taxonomy( self::$cpt_tags, self::PT, $args );
+	}
+
+
+	public static function support_thumbnails() {
+		$feature       = 'post-thumbnails';
+		$feature_level = get_theme_support( $feature );
+
+		if ( true === $feature_level ) {
+			// already enabled for all post types
+			return;
+		} elseif ( false === $feature_level ) {
+			// none allowed, only enable for our own
+			add_theme_support( $feature, array( self::PT ) );
+		} else {
+			// add our own to list of supported
+			$feature_level[0][] = self::PT;
+			add_theme_support( $feature, $feature_level[0] );
+		}
 	}
 
 
