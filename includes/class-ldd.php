@@ -80,12 +80,16 @@ class LDD extends Aihrus_Common {
 		load_plugin_textdomain( self::ID, false, 'ldd/languages' );
 
 		add_action( 'wp_ajax_ajax_process_post', array( __CLASS__, 'ajax_process_post' ) );
+		add_filter( 'pre_update_option_active_plugins', array( __CLASS__, 'pre_update_option_active_plugins' ), 10, 2 );
 
 		self::$cpt_category = self::PT . '-category';
 		self::$cpt_tags     = self::PT . '-post_tag';
 
 		self::init_post_type();
-		self::styles();
+
+		if ( self::do_load() ) {
+			self::styles();
+		}
 	}
 
 
@@ -381,6 +385,28 @@ class LDD extends Aihrus_Common {
 			$feature_level[0][] = self::PT;
 			add_theme_support( $feature, $feature_level[0] );
 		}
+	}
+
+
+	/**
+	 *
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 */
+	public static function pre_update_option_active_plugins( $plugins, $old_value ) {
+		if ( ! is_array( $plugins ) )
+			return $plugins;
+
+		if ( defined( 'LDDP_BASE' ) )
+			return $plugins;
+
+		$index = array_search( self::BASE, $plugins );
+		if ( false !== $index && ! empty( $index ) ) {
+			unset( $plugins[ $index ] );
+			array_unshift( $plugins, self::BASE );
+		}
+
+		return $plugins;
 	}
 
 
