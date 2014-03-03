@@ -143,10 +143,6 @@ class LDD_Deliveries extends Aihrus_Common {
 			self::$donate_link,
 		);
 
-		global $LDD_Deliveries_Premium;
-		if ( ! isset( $LDD_Deliveries_Premium ) )
-			$links[] = LDD_DELIVERIES_PREMIUM_LINK;
-
 		$input = array_merge( $input, $links );
 
 		return $input;

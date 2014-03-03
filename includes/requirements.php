@@ -36,6 +36,11 @@ function ldd_deliveries_requirements_check() {
 		$valid_requirements = false;
 	}
 
+	if ( ! is_plugin_active( LDD_DELIVERIES_REQ_BASE ) ) {
+		$valid_requirements = false;
+		add_action( 'admin_notices', 'ldd_deliveries_notice_version' );
+	}
+
 	if ( ! $valid_requirements ) {
 		deactivate_plugins( LDD_DELIVERIES_BASE );
 	}
@@ -51,6 +56,11 @@ function ldd_deliveries_notice_aihrus() {
 	$text = sprintf( esc_html__( 'Plugin "%1$s" has been deactivated as it requires a current Aihrus Framework. Once corrected, "%1$s" can be activated. %2$s' ), LDD_DELIVERIES_NAME, $help_link );
 
 	aihr_notice_error( $text );
+}
+
+
+function ldd_deliveries_notice_version() {
+	aihr_notice_version( LDD_DELIVERIES_REQ_BASE, LDD_DELIVERIES_REQ_NAME, LDD_DELIVERIES_REQ_SLUG, LDD_DELIVERIES_REQ_VERSION, LDD_DELIVERIES_NAME );
 }
 
 ?>

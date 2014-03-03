@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Legal Document Deliveries - Core by Aihrus
- * Plugin URI: http://wordpress.org/plugins/ldd-deliveries/
- * Description: TBD
+ * Plugin URI: http://aihr.us
+ * Description: LDD Deliveries post type core
  * Version: 1.0.0
  * Author: Michael Cannon
  * Author URI: http://aihr.us/resume/
@@ -44,8 +44,17 @@ if ( ! defined( 'LDD_DELIVERIES_DIR_LIB' ) )
 if ( ! defined( 'LDD_DELIVERIES_NAME' ) )
 	define( 'LDD_DELIVERIES_NAME', 'Legal Document Deliveries - Core by Aihrus' );
 
-if ( ! defined( 'LDD_DELIVERIES_PREMIUM_LINK' ) )
-	define( 'LDD_DELIVERIES_PREMIUM_LINK', '<a href="https://aihr.us/products/ldd-deliveries-premium/">Buy Premium</a>' );
+if ( ! defined( 'LDD_DELIVERIES_REQ_BASE' ) )
+	define( 'LDD_DELIVERIES_REQ_BASE', 'easy-digital-downloads/easy-digital-downloads.php' );
+
+if ( ! defined( 'LDD_DELIVERIES_REQ_NAME' ) )
+	define( 'LDD_DELIVERIES_REQ_NAME', 'Easy Digital Downloads' );
+
+if ( ! defined( 'LDD_DELIVERIES_REQ_SLUG' ) )
+	define( 'LDD_DELIVERIES_REQ_SLUG', 'easy-digital-downloads' );
+
+if ( ! defined( 'LDD_DELIVERIES_REQ_VERSION' ) )
+	define( 'LDD_DELIVERIES_REQ_VERSION', '1.9.4' );
 
 if ( ! defined( 'LDD_DELIVERIES_VERSION' ) )
 	define( 'LDD_DELIVERIES_VERSION', '1.0.0' );
