@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Legal Document Deliveries - Core
  * Plugin URI: http://aihr.us
- * Description: LDD Deliveries system core
+ * Description: LDD core
  * Version: 1.0.0
  * Author: Michael Cannon
  * Author URI: http://aihr.us/resume/

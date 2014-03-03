@@ -9,7 +9,7 @@ NEW_SITE=""
 NEW_SLUG="${NEW_FILTER}"
 NEW_SLUG_LONG="${NEW_BASE/-/_}"
 NEW_TITLE="Legal Document Deliveries - Core"
-NEW_TITLE_SHORT="LDD_Deliveries"
+NEW_TITLE_SHORT="LDD Deliveries"
 
 OLD_ABBR="WPS_"
 OLD_BASE="wordpress-starter"
