@@ -87,9 +87,6 @@ if ( ! function_exists( 'ldd_deliveries_init' ) ) {
 		if ( ! is_admin() )
 			return;
 
-		if ( ! function_exists( 'add_screen_meta_link' ) )
-			require_once LDD_DELIVERIES_DIR_LIB . 'screen-meta-links.php';
-
 		if ( LDD_Deliveries::version_check() ) {
 			global $LDD_Deliveries;
 			if ( is_null( $LDD_Deliveries ) )

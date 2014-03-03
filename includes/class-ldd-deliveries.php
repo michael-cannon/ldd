@@ -48,9 +48,9 @@ class LDD_Deliveries extends Aihrus_Common {
 		self::$plugin_assets = self::strip_protocol( self::$plugin_assets );
 
 		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
-		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
+		// fixme add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		add_action( 'init', array( __CLASS__, 'init' ) );
-		add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
+		// fixme add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
 		add_shortcode( 'ldd_deliveries_shortcode', array( __CLASS__, 'ldd_deliveries_shortcode' ) );
 	}
 
@@ -70,14 +70,6 @@ class LDD_Deliveries extends Aihrus_Common {
 
 		add_action( 'admin_print_scripts-' . self::$menu_id, array( __CLASS__, 'scripts' ) );
 		add_action( 'admin_print_styles-' . self::$menu_id, array( __CLASS__, 'styles' ) );
-
-		add_screen_meta_link(
-			'ldd_deliveries_settings_link',
-			esc_html__( 'Legal Document Deliveries - Core Settings', 'ldd-deliveries' ),
-			admin_url( 'options-general.php?page=' . LDD_Deliveries_Settings::ID ),
-			self::$menu_id,
-			array( 'style' => 'font-weight: bold;' )
-		);
 	}
 
 
@@ -95,8 +87,8 @@ class LDD_Deliveries extends Aihrus_Common {
 		if ( self::BASE == $file ) {
 			array_unshift( $links, self::$settings_link );
 
-			$link = '<a href="' . get_admin_url() . 'tools.php?page=' . self::ID . '">' . esc_html__( 'Process', 'ldd-deliveries' ) . '</a>';
-			array_unshift( $links, $link );
+			// fixme $link = '<a href="' . get_admin_url() . 'tools.php?page=' . self::ID . '">' . esc_html__( 'Process', 'ldd-deliveries' ) . '</a>';
+			// fixme array_unshift( $links, $link );
 		}
 
 		return $links;
@@ -135,7 +127,7 @@ class LDD_Deliveries extends Aihrus_Common {
 		if ( self::BASE != $file )
 			return $input;
 
-		$disable_donate = ldd_deliveries_get_option( 'disable_donate' );
+		$disable_donate = ldd_deliveries_get_option( 'disable_donate', true );
 		if ( $disable_donate )
 			return $input;
 
@@ -154,324 +146,6 @@ class LDD_Deliveries extends Aihrus_Common {
 		self::$post_types = array();
 		foreach ( $post_types as $post_type )
 			self::$post_types[] = $post_type;
-	}
-
-
-	/**
-	 *
-	 *
-	 * @SuppressWarnings(PHPMD.ExitExpression)
-	 * @SuppressWarnings(PHPMD.Superglobals)
-	 * @codingStandardsIgnoreStart
-	 */
-	public static function user_interface() {
-		// Capability check
-		if ( ! current_user_can( 'manage_options' ) )
-			wp_die( self::$post_id, esc_html__( "Your user account doesn't have permission to access this.", 'ldd-deliveries' ) );
-
-?>
-
-<div id="message" class="updated fade" style="display:none"></div>
-
-<div class="wrap wpsposts">
-	<div class="icon32" id="icon-tools"></div>
-	<h2><?php _e( 'Legal Document Deliveries - Core Processor', 'ldd-deliveries' ); ?></h2>
-
-<?php
-		if ( ldd_deliveries_get_option( 'debug_mode' ) ) {
-			$posts_to_import = ldd_deliveries_get_option( 'posts_to_import' );
-			$posts_to_import = explode( ',', $posts_to_import );
-			foreach ( $posts_to_import as $post_id ) {
-				self::$post_id = $post_id;
-				self::ajax_process_post();
-			}
-
-			exit( __LINE__ . ':' . basename( __FILE__ ) . " DONE<br />\n" );
-		}
-
-		// If the button was clicked
-		if ( ! empty( $_POST[ self::ID ] ) || ! empty( $_REQUEST['posts'] ) ) {
-			// Form nonce check
-			check_admin_referer( self::ID );
-
-			// Create the list of image IDs
-			if ( ! empty( $_REQUEST['posts'] ) ) {
-				$posts = explode( ',', trim( $_REQUEST['posts'], ',' ) );
-				$posts = array_map( 'intval', $posts );
-			} else {
-				$posts = self::get_posts_to_process();
-			}
-
-			$count = count( $posts );
-			if ( ! $count ) {
-				echo '	<p>' . _e( 'All done. No posts needing processing found.', 'ldd-deliveries' ) . '</p></div>';
-				return;
-			}
-
-			$posts = implode( ',', $posts );
-			self::show_status( $count, $posts );
-		} else {
-			// No button click? Display the form.
-			self::show_greeting();
-		}
-?>
-	</div>
-<?php
-	}
-	// @codingStandardsIgnoreEnd
-
-
-	public static function get_posts_to_process() {
-		global $wpdb;
-
-		$query = array(
-			'post_status' => array( 'publish', 'private' ),
-			'post_type' => self::$post_types,
-			'orderby' => 'post_modified',
-			'order' => 'DESC',
-		);
-
-		$include_ids = ldd_deliveries_get_option( 'posts_to_import' );
-		if ( $include_ids ) {
-			$query[ 'post__in' ] = str_getcsv( $include_ids );
-		} else {
-			$query['posts_per_page'] = 1;
-			$query['meta_query']     = array(
-				array(
-					'key' => 'TBD',
-					'value' => '',
-					'compare' => '!=',
-				),
-			);
-			unset( $query['meta_query'] );
-		}
-
-		$skip_ids = ldd_deliveries_get_option( 'skip_importing_post_ids' );
-		if ( $skip_ids )
-			$query[ 'post__not_in' ] = str_getcsv( $skip_ids );
-
-		$results  = new WP_Query( $query );
-		$query_wp = $results->request;
-
-		$limit = ldd_deliveries_get_option( 'limit' );
-		if ( $limit )
-			$query_wp = preg_replace( '#\bLIMIT 0,.*#', 'LIMIT 0,' . $limit, $query_wp );
-		else
-			$query_wp = preg_replace( '#\bLIMIT 0,.*#', '', $query_wp );
-
-		$posts = $wpdb->get_col( $query_wp );
-
-		return $posts;
-	}
-
-
-	/**
-	 * @codingStandardsIgnoreStart
-	 */
-	public static function show_greeting() {
-?>
-	<form method="post" action="">
-<?php wp_nonce_field( self::ID ); ?>
-
-	<p><?php _e( 'Use this tool to process posts for TBD.', 'ldd-deliveries' ); ?></p>
-
-	<p><?php _e( 'This processing is not reversible. Backup your database beforehand or be prepared to revert each transformed post manually.', 'ldd-deliveries' ); ?></p>
-
-	<p><?php printf( esc_html__( 'Please review your %s before proceeding.', 'ldd-deliveries' ), self::$settings_link ); ?></p>
-
-	<p><?php _e( 'To begin, just press the button below.', 'ldd-deliveries' ); ?></p>
-
-	<p><input type="submit" class="button hide-if-no-js" name="<?php echo self::ID; ?>" id="<?php echo self::ID; ?>" value="<?php _e( 'Process Legal Document Deliveries - Core', 'ldd-deliveries' ) ?>" /></p>
-
-	<noscript><p><em><?php _e( 'You must enable Javascript in order to proceed!', 'ldd-deliveries' ) ?></em></p></noscript>
-
-	</form>
-<?php
-	}
-	// @codingStandardsIgnoreEnd
-
-
-	/**
-	 *
-	 *
-	 * @SuppressWarnings(PHPMD.Superglobals)
-	 * @codingStandardsIgnoreStart
-	 */
-	public static function show_status( $count, $posts ) {
-		echo '<p>' . esc_html__( 'Please be patient while this script run. This can take a while, up to a minute per post. Do not navigate away from this page until this script is done or the import will not be completed. You will be notified via this page when the import is completed.', 'ldd-deliveries' ) . '</p>';
-
-		echo '<p>' . sprintf( esc_html__( 'Estimated time required to import is %1$s minutes.', 'ldd-deliveries' ), ( $count * 1 ) ) . '</p>';
-
-		$text_goback = ( ! empty( $_GET['goback'] ) ) ? sprintf( __( 'To go back to the previous page, <a href="%s">click here</a>.', 'ldd-deliveries' ), 'javascript:history.go(-1)' ) : '';
-
-		$text_failures = sprintf( __( 'All done! %1$s posts were successfully processed in %2$s seconds and there were %3$s failures. To try importing the failed posts again, <a href="%4$s">click here</a>. %5$s', 'ldd-deliveries' ), "' + rt_successes + '", "' + rt_totaltime + '", "' + rt_errors + '", esc_url( wp_nonce_url( admin_url( 'tools.php?page=' . self::ID . '&goback=1' ) ) . '&posts=' ) . "' + rt_failedlist + '", $text_goback );
-
-		$text_nofailures = sprintf( esc_html__( 'All done! %1$s posts were successfully processed in %2$s seconds and there were no failures. %3$s', 'ldd-deliveries' ), "' + rt_successes + '", "' + rt_totaltime + '", $text_goback );
-?>
-
-	<noscript><p><em><?php _e( 'You must enable Javascript in order to proceed!', 'ldd-deliveries' ) ?></em></p></noscript>
-
-	<div id="wpsposts-bar" style="position:relative;height:25px;">
-		<div id="wpsposts-bar-percent" style="position:absolute;left:50%;top:50%;width:300px;margin-left:-150px;height:25px;margin-top:-9px;font-weight:bold;text-align:center;"></div>
-	</div>
-
-	<p><input type="button" class="button hide-if-no-js" name="wpsposts-stop" id="wpsposts-stop" value="<?php _e( 'Abort Processing Posts', 'ldd-deliveries' ) ?>" /></p>
-
-	<h3 class="title"><?php _e( 'Status', 'ldd-deliveries' ) ?></h3>
-
-	<p>
-		<?php printf( esc_html__( 'Total Postss: %s', 'ldd-deliveries' ), $count ); ?><br />
-		<?php printf( esc_html__( 'Posts Processed: %s', 'ldd-deliveries' ), '<span id="wpsposts-debug-successcount">0</span>' ); ?><br />
-		<?php printf( esc_html__( 'Process Failures: %s', 'ldd-deliveries' ), '<span id="wpsposts-debug-failurecount">0</span>' ); ?>
-	</p>
-
-	<ol id="wpsposts-debuglist">
-		<li style="display:none"></li>
-	</ol>
-
-	<script type="text/javascript">
-	// <![CDATA[
-		jQuery(document).ready(function($){
-			var i;
-			var rt_posts = [<?php echo esc_attr( $posts ); ?>];
-			var rt_total = rt_posts.length;
-			var rt_count = 1;
-			var rt_percent = 0;
-			var rt_successes = 0;
-			var rt_errors = 0;
-			var rt_failedlist = '';
-			var rt_resulttext = '';
-			var rt_timestart = new Date().getTime();
-			var rt_timeend = 0;
-			var rt_totaltime = 0;
-			var rt_continue = true;
-
-			// Create the progress bar
-			$( "#wpsposts-bar" ).progressbar();
-			$( "#wpsposts-bar-percent" ).html( "0%" );
-
-			// Stop button
-			$( "#wpsposts-stop" ).click(function() {
-				rt_continue = false;
-				$( '#wpsposts-stop' ).val( "<?php echo esc_html__( 'Stopping, please wait a moment.', 'ldd-deliveries' ); ?>" );
-			});
-
-			// Clear out the empty list element that's there for HTML validation purposes
-			$( "#wpsposts-debuglist li" ).remove();
-
-			// Called after each import. Updates debug information and the progress bar.
-			function WPSPostsUpdateStatus( id, success, response ) {
-				$( "#wpsposts-bar" ).progressbar( "value", ( rt_count / rt_total ) * 100 );
-				$( "#wpsposts-bar-percent" ).html( Math.round( ( rt_count / rt_total ) * 1000 ) / 10 + "%" );
-				rt_count = rt_count + 1;
-
-				if ( success ) {
-					rt_successes = rt_successes + 1;
-					$( "#wpsposts-debug-successcount" ).html(rt_successes);
-					$( "#wpsposts-debuglist" ).append( "<li>" + response.success + "</li>" );
-				}
-				else {
-					rt_errors = rt_errors + 1;
-					rt_failedlist = rt_failedlist + ',' + id;
-					$( "#wpsposts-debug-failurecount" ).html(rt_errors);
-					$( "#wpsposts-debuglist" ).append( "<li>" + response.error + "</li>" );
-				}
-			}
-
-			// Called when all posts have been processed. Shows the results and cleans up.
-			function WPSPostsFinishUp() {
-				rt_timeend = new Date().getTime();
-				rt_totaltime = Math.round( ( rt_timeend - rt_timestart ) / 1000 );
-
-				$( '#wpsposts-stop' ).hide();
-
-				if ( rt_errors > 0 ) {
-					rt_resulttext = '<?php echo $text_failures; ?>';
-				} else {
-					rt_resulttext = '<?php echo $text_nofailures; ?>';
-				}
-
-				$( "#message" ).html( "<p><strong>" + rt_resulttext + "</strong></p>" );
-				$( "#message" ).show();
-			}
-
-			// Regenerate a specified image via AJAX
-			function WPSPosts( id ) {
-				$.ajax({
-					type: 'POST',
-					url: ajaxurl,
-					data: {
-						action: "ajax_process_post",
-						id: id
-					},
-					success: function( response ) {
-						if ( response.success ) {
-							WPSPostsUpdateStatus( id, true, response );
-						}
-						else {
-							WPSPostsUpdateStatus( id, false, response );
-						}
-
-						if ( rt_posts.length && rt_continue ) {
-							WPSPosts( rt_posts.shift() );
-						}
-						else {
-							WPSPostsFinishUp();
-						}
-					},
-					error: function( response ) {
-						WPSPostsUpdateStatus( id, false, response );
-
-						if ( rt_posts.length && rt_continue ) {
-							WPSPosts( rt_posts.shift() );
-						}
-						else {
-							WPSPostsFinishUp();
-						}
-					}
-				});
-			}
-
-			WPSPosts( rt_posts.shift() );
-		});
-	// ]]>
-	</script>
-<?php
-	}
-	// @codingStandardsIgnoreEnd
-
-
-	/**
-	 * Process a single post ID (this is an AJAX handler)
-	 *
-	 * @SuppressWarnings(PHPMD.ExitExpression)
-	 * @SuppressWarnings(PHPMD.Superglobals)
-	 */
-	public static function ajax_process_post() {
-		if ( ! ldd_deliveries_get_option( 'debug_mode' ) ) {
-			error_reporting( 0 ); // Don't break the JSON result
-			header( 'Content-type: application/json' );
-			self::$post_id = intval( $_REQUEST['id'] );
-		}
-
-		$post = get_post( self::$post_id );
-		if ( ! $post || ! in_array( $post->post_type, self::$post_types )  )
-			die( json_encode( array( 'error' => sprintf( esc_html__( 'Failed Processing: %s is incorrect post type.', 'ldd-deliveries' ), esc_html( self::$post_id ) ) ) ) );
-
-		self::do_something( self::$post_id, $post );
-
-		die( json_encode( array( 'success' => sprintf( __( '&quot;<a href="%1$s" target="_blank">%2$s</a>&quot; Post ID %3$s was successfully processed in %4$s seconds.', 'ldd-deliveries' ), get_permalink( self::$post_id ), esc_html( get_the_title( self::$post_id ) ), self::$post_id, timer_stop() ) ) ) );
-	}
-
-
-	/**
-	 *
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
-	public static function do_something( $post_id, $post ) {
-		// do something there with the post
-		// use error_log to track happenings
 	}
 
 
@@ -519,8 +193,8 @@ class LDD_Deliveries extends Aihrus_Common {
 		if ( is_admin() ) {
 			wp_enqueue_script( 'jquery' );
 
-			wp_register_script( 'jquery-ui-progressbar', self::$plugin_assets . 'js/jquery.ui.progressbar.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget' ), '1.10.3' );
-			wp_enqueue_script( 'jquery-ui-progressbar' );
+			// fixme wp_register_script( 'jquery-ui-progressbar', self::$plugin_assets . 'js/jquery.ui.progressbar.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget' ), '1.10.3' );
+			// fixme wp_enqueue_script( 'jquery-ui-progressbar' );
 
 			add_action( 'admin_footer', array( 'LDD_Deliveries', 'get_scripts' ) );
 		} else {
@@ -533,8 +207,8 @@ class LDD_Deliveries extends Aihrus_Common {
 
 	public static function styles() {
 		if ( is_admin() ) {
-			wp_register_style( 'jquery-ui-progressbar', self::$plugin_assets . 'css/redmond/jquery-ui-1.10.3.custom.min.css', false, '1.10.3' );
-			wp_enqueue_style( 'jquery-ui-progressbar' );
+			// fixme wp_register_style( 'jquery-ui-progressbar', self::$plugin_assets . 'css/redmond/jquery-ui-1.10.3.custom.min.css', false, '1.10.3' );
+			// fixme wp_enqueue_style( 'jquery-ui-progressbar' );
 
 			add_action( 'admin_footer', array( 'LDD_Deliveries', 'get_styles' ) );
 		} else {

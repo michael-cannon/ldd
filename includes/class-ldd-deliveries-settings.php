@@ -37,7 +37,7 @@ class LDD_Deliveries_Settings extends Aihrus_Settings {
 	public static $defaults           = array();
 	public static $hide_update_notice = true;
 	public static $plugin_assets;
-	public static $plugin_url = 'http://wordpress.org/plugins/ldd-deliveries/';
+	public static $plugin_url = 'http://aihr.us';
 	public static $sections = array();
 	public static $settings = array();
 	public static $version;
@@ -74,14 +74,6 @@ class LDD_Deliveries_Settings extends Aihrus_Settings {
 		add_action( 'admin_print_scripts-' . self::$admin_page, array( __CLASS__, 'scripts' ) );
 		add_action( 'admin_print_styles-' . self::$admin_page, array( __CLASS__, 'styles' ) );
 		add_action( 'load-' . self::$admin_page, array( __CLASS__, 'settings_add_help_tabs' ) );
-
-		add_screen_meta_link(
-			'wsp_importer_link',
-			esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd-deliveries' ),
-			admin_url( 'tools.php?page=' . LDD_Deliveries::ID ),
-			self::$admin_page,
-			array( 'style' => 'font-weight: bold;' )
-		);
 	}
 
 
@@ -192,7 +184,7 @@ class LDD_Deliveries_Settings extends Aihrus_Settings {
 
 
 	public static function display_page( $disable_donate = false ) {
-		$disable_donate = ldd_deliveries_get_option( 'disable_donate' );
+		$disable_donate = ldd_deliveries_get_option( 'disable_donate', true );
 
 		parent::display_page( $disable_donate );
 	}
