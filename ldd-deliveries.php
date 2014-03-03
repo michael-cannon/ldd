@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Legal Document Deliveries - Core by Aihrus
+ * Plugin Name: Legal Document Deliveries - Core
  * Plugin URI: http://aihr.us
  * Description: LDD Deliveries system core
  * Version: 1.0.0
@@ -42,7 +42,7 @@ if ( ! defined( 'LDD_DELIVERIES_DIR_LIB' ) )
 	define( 'LDD_DELIVERIES_DIR_LIB', LDD_DELIVERIES_DIR_INC . 'libraries/' );
 
 if ( ! defined( 'LDD_DELIVERIES_NAME' ) )
-	define( 'LDD_DELIVERIES_NAME', 'Legal Document Deliveries - Core by Aihrus' );
+	define( 'LDD_DELIVERIES_NAME', 'Legal Document Deliveries - Core' );
 
 if ( ! defined( 'LDD_DELIVERIES_REQ_BASE' ) )
 	define( 'LDD_DELIVERIES_REQ_BASE', 'easy-digital-downloads/easy-digital-downloads.php' );

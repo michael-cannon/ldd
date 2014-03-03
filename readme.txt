@@ -1,4 +1,4 @@
-=== Legal Document Deliveries - Core by Aihrus ===
+=== Legal Document Deliveries - Core ===
 
 Contributors: comprock
 Donate link: http://aihr.us/about-aihrus/donate/
@@ -89,8 +89,8 @@ The WordPress KEYWORD plugin, Legal Document Deliveries - Core, TBD.
 = Install Methods =
 
 * Through WordPress Admin > Plugins > Add New, Search for "Legal Document Deliveries - Core"
-	* Find "Legal Document Deliveries - Core by Aihrus"
-	* Click "Install Now" of "Legal Document Deliveries - Core by Aihrus"
+	* Find "Legal Document Deliveries - Core"
+	* Click "Install Now" of "Legal Document Deliveries - Core"
 * Download [`ldd-deliveries.zip`](http://downloads.wordpress.org/plugin/ldd-deliveries.zip) locally
 	* Through WordPress Admin > Plugins > Add New
 	* Click Upload

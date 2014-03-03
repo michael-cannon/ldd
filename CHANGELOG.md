@@ -1,4 +1,4 @@
-# CHANGELOG Legal Document Deliveries - Core by Aihrus
+# CHANGELOG Legal Document Deliveries - Core
 
 ## master
 
