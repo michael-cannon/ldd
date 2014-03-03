@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyright 2013 Michael Cannon (email: mc@aihr.us)
+	Copyright 2014 Michael Cannon (email: mc@aihr.us)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License, version 2, as
@@ -308,12 +308,14 @@ EOD;
 	}
 
 
-	public static function get_image_src( $image ) {
+	public static function get_image_src( $image, $strip_protocol = true ) {
 		$doc = new DOMDocument();
 		$doc->loadHTML( $image );
 		$xpath = new DOMXPath( $doc );
 		$src   = $xpath->evaluate( 'string(//img/@src)' );
-		$src   = self::strip_protocol( $src );
+
+		if ( $strip_protocol )
+			$src = self::strip_protocol( $src );
 
 		return $src;
 	}
