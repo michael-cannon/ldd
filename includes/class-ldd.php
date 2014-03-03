@@ -79,7 +79,6 @@ class LDD extends Aihrus_Common {
 	public static function init() {
 		load_plugin_textdomain( self::ID, false, 'ldd/languages' );
 
-		add_action( 'wp_ajax_ajax_process_post', array( __CLASS__, 'ajax_process_post' ) );
 		add_filter( 'pre_update_option_active_plugins', array( __CLASS__, 'pre_update_option_active_plugins' ), 10, 2 );
 
 		self::$cpt_category = self::PT . '-category';
