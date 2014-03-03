@@ -37,9 +37,9 @@ class LDD_Settings extends Aihrus_Settings {
 	public static $defaults           = array();
 	public static $hide_update_notice = true;
 	public static $plugin_assets;
-	public static $plugin_url = 'http://aihr.us';
-	public static $sections = array();
-	public static $settings = array();
+	public static $plugin_url = 'https://github.com/michael-cannon/ldd';
+	public static $sections   = array();
+	public static $settings   = array();
 	public static $version;
 
 
