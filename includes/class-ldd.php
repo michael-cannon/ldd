@@ -316,12 +316,16 @@ class LDD extends Aihrus_Common {
 		);
 
 		$supports = array(
-			'title',
-			'editor',
-			'thumbnail',
 			'comments',
+			'editor',
 			'publicize',
+			'thumbnail',
+			'title',
 		);
+
+		// editor's and up
+		if ( current_user_can( 'edit_others_posts' ) )
+			$supports[] = 'author';
 
 		$taxonomies = array(
 			self::$cpt_category,
