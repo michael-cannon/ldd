@@ -56,8 +56,8 @@ class LDD extends Aihrus_Common {
 
 
 	public static function admin_init() {
-		self::support_thumbnails();
-		self::update();
+		// fixme self::support_thumbnails();
+		// fixme self::update();
 
 		add_filter( 'plugin_action_links', array( __CLASS__, 'plugin_action_links' ), 10, 2 );
 		add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
@@ -180,7 +180,7 @@ class LDD extends Aihrus_Common {
 		}
 
 		// display donate on major/minor version release
-		$donate_version = ldd_get_option( 'donate_version', false );
+		$donate_version = ldd_get_option( 'donate_version' );
 		if ( ! $donate_version || ( $donate_version != self::VERSION && preg_match( '#\.0$#', self::VERSION ) ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'notice_donate' ) );
 			ldd_set_option( 'donate_version', self::VERSION );
@@ -316,8 +316,6 @@ class LDD extends Aihrus_Common {
 		$supports = array(
 			'comments',
 			'editor',
-			'publicize',
-			'thumbnail',
 			'title',
 		);
 
@@ -330,29 +328,22 @@ class LDD extends Aihrus_Common {
 			self::$cpt_tags,
 		);
 
-		self::register_taxonomies();
+		// fixme self::register_taxonomies();
 
 		$args = array(
-			'label' => esc_html__( 'LDD Core' ),
+			'label' => esc_html__( 'LDD Deliveries' ),
 			'capability_type' => 'post',
-			'has_archive' => true,
-			'hierarchical' => false,
 			'labels' => $labels,
-			'public' => true,
-			'publicly_queryable' => true,
-			'query_var' => true,
-			'rewrite' => array(
-				'slug' => 'delivery',
-				'with_front' => false,
-			),
+			'public' => false,
+			'show_ui' => true,
 			'supports' => $supports,
-			'taxonomies' => $taxonomies,
+			// fixme 'taxonomies' => $taxonomies,
 		);
 
 		register_post_type( self::PT, $args );
 
-		register_taxonomy_for_object_type( self::$cpt_category, self::PT );
-		register_taxonomy_for_object_type( self::$cpt_tags, self::PT );
+		// fixme register_taxonomy_for_object_type( self::$cpt_category, self::PT );
+		// fixme register_taxonomy_for_object_type( self::$cpt_tags, self::PT );
 	}
 
 
