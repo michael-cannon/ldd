@@ -2,6 +2,12 @@
 
 ## master
 
+## 1.0.4RC3
+* Add validate_email
+* Register `jquery-style`
+* RESOLVE michael-cannon/testimonials-widget#65 Widget blank options aren't saving correctly
+* Update copyright year
+
 ## 1.0.3
 * RESOLVE Fatal error: Call to undefined function add_settings_error() in class-aihrus-settings.php on line 559
 * RESOLVE Featured image via Gravatar not saving correctly
