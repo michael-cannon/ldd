@@ -40,8 +40,6 @@ class LDD extends Aihrus_Common {
 	public static $styles        = array();
 	public static $styles_called = false;
 
-	public static $post_id;
-
 
 	public function __construct() {
 		parent::__construct();
