@@ -3,6 +3,7 @@
 ## master
 
 ## 1.0.0
+* Add delivery statuses - assigned, prepare, enroute
 * Disable donate and premium links
 * Initial code release 
 * Remove mass processor

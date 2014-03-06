@@ -16,6 +16,9 @@
 require_once AIHR_DIR_INC . 'class-aihrus-common.php';
 require_once LDD_DIR_INC . 'class-ldd-settings.php';
 require_once LDD_DIR_INC . 'class-ldd-widget.php';
+require_once LDD_DIR_INC . 'class-post-status-assigned.php';
+require_once LDD_DIR_INC . 'class-post-status-prepare.php';
+require_once LDD_DIR_INC . 'class-post-status-enroute.php';
 
 if ( class_exists( 'LDD' ) )
 	return;
@@ -46,6 +49,8 @@ class LDD extends Aihrus_Common {
 
 		self::$plugin_assets = plugins_url( '/assets/', dirname( __FILE__ ) );
 		self::$plugin_assets = self::strip_protocol( self::$plugin_assets );
+
+		self::actions();
 
 		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
 		// fixme add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
@@ -401,6 +406,12 @@ class LDD extends Aihrus_Common {
 		return $plugins;
 	}
 
+
+	public static function actions() {
+		add_action( 'after_setup_theme', array( 'post_status_assigned', 'init' ) );
+		add_action( 'after_setup_theme', array( 'post_status_enroute', 'init' ) );
+		add_action( 'after_setup_theme', array( 'post_status_prepare', 'init' ) );
+	}
 
 }
 
