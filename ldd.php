@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Legal Document Deliveries - Core
- * Plugin URI: http://aihr.us
+ * Plugin URI: https://github.com/michael-cannon/ldd
  * Description: LDD core
  * Version: 1.0.0
  * Author: Michael Cannon

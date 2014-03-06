@@ -7,4 +7,7 @@
 * Initial code release 
 * Remove mass processor
 * Remove Process plugin action link
+* Remove unused settings
 * Set plugin URL to aihr.us
+* Update Aihrus 1.0.4RC3
+* Update plugin url
