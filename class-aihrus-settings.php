@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyright 2013 Michael Cannon (email: mc@aihr.us)
+	Copyright 2014 Michael Cannon (email: mc@aihr.us)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License, version 2, as
@@ -468,7 +468,8 @@ abstract class Aihrus_Settings {
 
 
 	public static function styles() {
-		wp_enqueue_style( 'jquery-style', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+		wp_register_style( 'jquery-style', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+		wp_enqueue_style( 'jquery-style' );
 	}
 
 
@@ -484,8 +485,8 @@ abstract class Aihrus_Settings {
 		if ( is_null( $options ) ) {
 			$null_options = true;
 
-			$options  = self::get_settings();
 			$defaults = static::get_defaults();
+			$options  = self::get_settings();
 
 			if ( is_admin() ) {
 				if ( ! empty( $input['reset_defaults'] ) ) {
@@ -516,10 +517,15 @@ abstract class Aihrus_Settings {
 				$validations = explode( ',', $validations );
 
 			if ( ! isset( $input[ $id ] ) ) {
-				if ( 'checkbox' != $type )
+				if ( 'checkbox' != $type ) {
 					$input[ $id ] = $default;
-				else
-					$input[ $id ] = 0;
+				} else {
+					if ( empty( $parts['widget'] ) ) {
+						continue;
+					} else {
+						$input[ $id ] = 0;
+					}
+				}
 			}
 
 			if ( $default == $input[ $id ] && ! in_array( 'required', $validations ) )
@@ -582,6 +588,10 @@ abstract class Aihrus_Settings {
 					$input[ $id ] = $validate( $input[ $id ] );
 				else
 					$input[ $id ] = $default;
+				break;
+
+			case 'email':
+				$input[ $id ] = self::validate_email( $input[ $id ], $default );
 				break;
 
 			case 'ids':
@@ -714,6 +724,14 @@ abstract class Aihrus_Settings {
 			else
 				return 0;
 		}
+	}
+
+
+	public static function validate_email( $input, $default ) {
+		if ( filter_var( $input, FILTER_VALIDATE_EMAIL ) )
+			return $input;
+
+		return $default;
 	}
 
 
