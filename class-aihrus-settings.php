@@ -396,7 +396,26 @@ abstract class Aihrus_Settings {
 
 				if ( ! empty( $desc ) )
 					$content .= '<br /><span class="description">' . $desc . '</span>';
+				break;
 
+			case 'rich_editor':
+				global $wp_version;
+				
+				$field_value = $options[$id];
+
+				if ( $wp_version >= 3.3 && function_exists( 'wp_editor' ) ) {
+					ob_start();
+					wp_editor( $field_value, static::ID . '[' . $id . ']', array( 'textarea_name' => static::ID . '[' . $id . ']' ) );
+					$content = ob_get_clean();
+				} else {
+					$content = '<textarea class="large-text" rows="10" id="' . static::ID . '[' . $id . ']" name="' . static::ID . '[' . $id . ']">' . esc_textarea( $field_value ) . '</textarea>';
+				}
+
+				if ( ! empty( $desc ) )
+					$content .= '<br /><span class="description">' . $desc . '</span>';
+
+				if ( $show_code )
+					$content .= '<br /><code>' . $id . '</code>';
 				break;
 
 			case 'select':
