@@ -13,7 +13,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-require_once LDD_DIR_LIB . 'aihrus-framework/class-aihrus-common.php';
+require_once AIHR_DIR_INC . 'class-aihrus-common.php';
 require_once LDD_DIR_INC . 'class-ldd-settings.php';
 require_once LDD_DIR_INC . 'class-ldd-widget.php';
 

@@ -9,5 +9,5 @@
 * Remove Process plugin action link
 * Remove unused settings
 * Set plugin URL to aihr.us
-* Update Aihrus 1.0.4RC3
+* Update Aihrus 1.1.0RC1
 * Update plugin url

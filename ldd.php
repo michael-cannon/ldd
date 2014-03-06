@@ -27,7 +27,7 @@
  */
 
 if ( ! defined( 'LDD_AIHR_VERSION' ) )
-	define( 'LDD_AIHR_VERSION', '1.0.4RC4' );
+	define( 'LDD_AIHR_VERSION', '1.1.0RC1' );
 
 if ( ! defined( 'LDD_BASE' ) )
 	define( 'LDD_BASE', plugin_basename( __FILE__ ) );
