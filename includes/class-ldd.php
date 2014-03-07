@@ -19,7 +19,6 @@ require_once LDD_DIR_INC . 'class-ldd-widget.php';
 require_once LDD_DIR_INC . 'class-post-status-assigned.php';
 require_once LDD_DIR_INC . 'class-post-status-prepare.php';
 require_once LDD_DIR_INC . 'class-post-status-enroute.php';
-require_once LDD_DIR_INC . 'class-post-status-delivered.php';
 
 if ( class_exists( 'LDD' ) )
 	return;
@@ -412,7 +411,6 @@ class LDD extends Aihrus_Common {
 		add_action( 'after_setup_theme', array( 'post_status_assigned', 'init' ) );
 		add_action( 'after_setup_theme', array( 'post_status_prepare', 'init' ) );
 		add_action( 'after_setup_theme', array( 'post_status_enroute', 'init' ) );
-		add_action( 'after_setup_theme', array( 'post_status_delivered', 'init' ) );
 	}
 
 }

@@ -30,14 +30,16 @@ function ldd_gettext( $translated ) {
 		}
 
 		if ( $post_type )
-			$do_it     = in_array( $post_type, array( LDD::PT ) );
+			$do_it = in_array( $post_type, array( LDD::PT ) );
 	}
 
 	if ( ! $do_it )
 		return $translated;
 
-	$client     = 'Client';
-	$translated = str_replace( 'Author', $client, $translated );
+	$translated = str_replace( 'Author', 'Client', $translated );
+	$translated = str_replace( 'Pending Review', 'Awaiting Assignment', $translated );
+	$translated = str_replace( 'Publish', 'Delivered', $translated );
+	$translated = str_replace( 'Published', 'Delivered', $translated );
 
 	return $translated;
 }
