@@ -5,10 +5,12 @@
 ## 1.0.0
 * Add delivery statuses - assigned, prepare, enroute, delivered
 * Disable donate and premium links
+* Hide visibility options in Publish box
 * Initial code release 
 * Remove delivered status
 * Remove mass processor
 * Remove Process plugin action link
+* Remove slug/discussions meta boxes
 * Remove unused settings
 * Rename status labels
 * Set plugin URL to aihr.us

@@ -38,8 +38,12 @@ function ldd_gettext( $translated ) {
 
 	$translated = str_replace( 'Author', 'Client', $translated );
 	$translated = str_replace( 'Pending Review', 'Awaiting Assignment', $translated );
-	$translated = str_replace( 'Publish', 'Delivered', $translated );
-	$translated = str_replace( 'Published', 'Delivered', $translated );
+	// $translated = str_replace( 'Published', 'Delivered', $translated );
+	// $translated = str_replace( 'Save Draft', 'Save Update', $translated );
+	// $translated = str_replace( 'Save as Pending', 'Save Update', $translated );
+
+	// late ordering is important
+	// $translated = str_replace( 'Publish', 'Status', $translated );
 
 	return $translated;
 }

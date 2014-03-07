@@ -53,7 +53,7 @@ class LDD extends Aihrus_Common {
 		self::actions();
 
 		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
-		// fixme add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		add_action( 'init', array( __CLASS__, 'init' ) );
 		// fixme add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
 		add_shortcode( 'ldd_shortcode', array( __CLASS__, 'ldd_shortcode' ) );
@@ -72,10 +72,14 @@ class LDD extends Aihrus_Common {
 
 
 	public static function admin_menu() {
-		self::$menu_id = add_management_page( esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd' ), esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd' ), 'manage_options', self::ID, array( __CLASS__, 'user_interface' ) );
+		self::remove_meta_box();
 
-		add_action( 'admin_print_scripts-' . self::$menu_id, array( __CLASS__, 'scripts' ) );
-		add_action( 'admin_print_styles-' . self::$menu_id, array( __CLASS__, 'styles' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'styles' ) );
+
+		// fixme self::$menu_id = add_management_page( esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd' ), esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd' ), 'manage_options', self::ID, array( __CLASS__, 'user_interface' ) );
+
+		// fixme add_action( 'admin_print_scripts-' . self::$menu_id, array( __CLASS__, 'scripts' ) );
+		// fixme add_action( 'admin_print_styles-' . self::$menu_id, array( __CLASS__, 'styles' ) );
 	}
 
 
@@ -209,8 +213,12 @@ class LDD extends Aihrus_Common {
 	}
 
 
-	public static function styles() {
+	public static function styles( $hook = false ) {
 		if ( is_admin() ) {
+			if ( ! empty( $hook ) && in_array( $hook, array( 'post.php', 'post-new.php' ) ) ) {
+				wp_register_style( __CLASS__, self::$plugin_assets . 'css/ldd.css' );
+				wp_enqueue_style( __CLASS__ );
+			}
 			// fixme wp_register_style( 'jquery-ui-progressbar', self::$plugin_assets . 'css/redmond/jquery-ui-1.10.3.custom.min.css', false, '1.10.3' );
 			// fixme wp_enqueue_style( 'jquery-ui-progressbar' );
 
@@ -320,7 +328,6 @@ class LDD extends Aihrus_Common {
 
 		$supports = array(
 			'comments',
-			'editor',
 			'title',
 		);
 
@@ -409,8 +416,14 @@ class LDD extends Aihrus_Common {
 
 	public static function actions() {
 		add_action( 'after_setup_theme', array( 'post_status_assigned', 'init' ) );
-		add_action( 'after_setup_theme', array( 'post_status_prepare', 'init' ) );
 		add_action( 'after_setup_theme', array( 'post_status_enroute', 'init' ) );
+		add_action( 'after_setup_theme', array( 'post_status_prepare', 'init' ) );
+	}
+
+
+	public static function remove_meta_box() {
+		remove_meta_box( 'commentstatusdiv', LDD::PT, 'normal' );
+		remove_meta_box( 'slugdiv', LDD::PT, 'normal' );
 	}
 
 }
