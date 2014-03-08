@@ -915,7 +915,7 @@ jQuery('#edit_<?php echo $this->_category_name; ?>_<?php echo $meta_id; ?>').cli
 					<label for="<?php echo $id; ?>"><?php echo $name; ?></label>
 				</th>
 				<td>
-					<?php call_user_func( $type, $args, $field, $custom[ $id ] ); ?>
+					<?php call_user_func( $type, $args, $field, isset( $custom[ $id ] ) ? $custom[ $id ] : null ); ?>
 					<span class="description"><?php echo $desc; ?></span>
 				</td>
 			</tr>
