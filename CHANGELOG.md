@@ -4,9 +4,11 @@
 
 ## 1.0.0
 * Add delivery statuses - assigned, prepare, enroute, delivered
+* Add ldd_insert_delivery_note
 * Disable donate and premium links
 * Hide visibility options in Publish box
 * Improve labeling and update handling
+* Include scripts
 * Initial code release 
 * Remove delivered status
 * Remove mass processor

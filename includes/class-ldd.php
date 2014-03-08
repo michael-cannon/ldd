@@ -52,7 +52,6 @@ class LDD extends Aihrus_Common {
 
 		self::actions();
 		self::filters();
-		self::scripts();
 
 		add_shortcode( 'ldd_shortcode', array( __CLASS__, 'ldd_shortcode' ) );
 	}
@@ -314,8 +313,8 @@ class LDD extends Aihrus_Common {
 		);
 
 		$supports = array(
-			'comments',
 			'title',
+			'comments',
 		);
 
 		// editor's and up
@@ -403,7 +402,6 @@ class LDD extends Aihrus_Common {
 
 	public static function actions() {
 		// fixme add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
-
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'styles' ) );
 		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
@@ -411,10 +409,12 @@ class LDD extends Aihrus_Common {
 		add_action( 'after_setup_theme', array( 'post_status_enroute', 'init' ) );
 		add_action( 'after_setup_theme', array( 'post_status_prepare', 'init' ) );
 		add_action( 'init', array( __CLASS__, 'init' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'styles' ) );
         add_action( 'admin_head-post-new.php', array ( __CLASS__, 'hide_publish_button' ) );
-        add_action( 'admin_head-post.php', array ( __CLASS__, 'hide_publish_button' ) );
         add_action( 'admin_head-post-new.php', array ( __CLASS__, 'load_gettext_filters' ) );
+        add_action( 'admin_head-post.php', array ( __CLASS__, 'hide_publish_button' ) );
         add_action( 'admin_head-post.php', array ( __CLASS__, 'load_gettext_filters' ) );
 	}
 
@@ -498,11 +498,53 @@ class LDD extends Aihrus_Common {
 						post_status = jQuery('#post_status').val();
 						if ( 'publish' == post_status ) {
 							jQuery('#publishing-action #publish').show();
+						} else {
+							jQuery('#publishing-action #publish').hide();
 						}
 					});
 				});
 			</script>
 		";
+	}
+
+
+	/**
+	 * Add a note to a delivery
+	 *
+	 * @see edd_insert_payment_note
+	 *
+	 * @param int $delivery_id The delivery ID to store a note for
+	 * @param string $note The note to store
+	 * @return int The new note ID
+	 */
+	function ldd_insert_delivery_note( $delivery_id = 0, $note = '' ) {
+		if ( empty( $delivery_id ) )
+			return false;
+
+		do_action( 'ldd_pre_insert_delivery_note', $delivery_id, $note );
+
+		$note_id = wp_insert_comment(
+			wp_filter_comment(
+				array(
+					'comment_post_ID' => $delivery_id,
+					'comment_content' => $note,
+					'user_id' => is_admin() ? get_current_user_id() : 0,
+					'comment_date' => current_time( 'mysql' ),
+					'comment_date_gmt' => current_time( 'mysql', 1 ),
+					'comment_approved' => 1,
+					'comment_parent' => 0,
+					'comment_author' => '',
+					'comment_author_IP' => '',
+					'comment_author_url' => '',
+					'comment_author_email' => '',
+					'comment_type' => 'ldd_delivery_note',
+				)
+			)
+		);
+
+		do_action( 'ldd_insert_delivery_note', $note_id, $delivery_id, $note );
+
+		return $note_id;
 	}
 
 }
