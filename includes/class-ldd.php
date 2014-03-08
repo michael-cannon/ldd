@@ -51,6 +51,8 @@ class LDD extends Aihrus_Common {
 		self::$plugin_assets = self::strip_protocol( self::$plugin_assets );
 
 		self::actions();
+		self::filters();
+		self::scripts();
 
 		add_shortcode( 'ldd_shortcode', array( __CLASS__, 'ldd_shortcode' ) );
 	}
@@ -59,9 +61,6 @@ class LDD extends Aihrus_Common {
 	public static function admin_init() {
 		// fixme self::support_thumbnails();
 		// fixme self::update();
-
-		add_filter( 'plugin_action_links', array( __CLASS__, 'plugin_action_links' ), 10, 2 );
-		add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
 
 		self::$settings_link = '<a href="' . get_admin_url() . 'edit.php?post_type=' . self::PT . '&page=' . LDD_Settings::ID . '">' . __( 'Settings', 'ldd' ) . '</a>';
 	}
@@ -79,8 +78,6 @@ class LDD extends Aihrus_Common {
 
 	public static function init() {
 		load_plugin_textdomain( self::ID, false, 'ldd/languages' );
-
-		add_filter( 'pre_update_option_active_plugins', array( __CLASS__, 'pre_update_option_active_plugins' ), 10, 2 );
 
 		self::$cpt_category = self::PT . '-category';
 		self::$cpt_tags     = self::PT . '-post_tag';
@@ -191,7 +188,7 @@ class LDD extends Aihrus_Common {
 		if ( is_admin() ) {
 			wp_enqueue_script( 'jquery' );
 
-			// fixme wp_register_script( 'jquery-ui-progressbar', self::$plugin_assets . 'js/jquery.ui.progressbar.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget' ), '1.10.3' );
+			// fixme wp_register_script( 'jquery-ui-progressbar', self::$plugin_assets . 'js/jquery.ui.progressbar.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget' ), '1.10.3', true );
 			// fixme wp_enqueue_script( 'jquery-ui-progressbar' );
 
 			add_action( 'admin_footer', array( 'LDD', 'get_scripts' ) );
@@ -209,7 +206,7 @@ class LDD extends Aihrus_Common {
 				wp_register_style( __CLASS__, self::$plugin_assets . 'css/ldd.css' );
 				wp_enqueue_style( __CLASS__ );
 			}
-			// fixme wp_register_style( 'jquery-ui-progressbar', self::$plugin_assets . 'css/redmond/jquery-ui-1.10.3.custom.min.css', false, '1.10.3' );
+			// fixme wp_register_style( 'jquery-ui-progressbar', self::$plugin_assets . 'css/redmond/jquery-ui-1.10.3.custom.min.css', false, '1.10.3', true );
 			// fixme wp_enqueue_style( 'jquery-ui-progressbar' );
 
 			add_action( 'admin_footer', array( 'LDD', 'get_styles' ) );
@@ -406,6 +403,7 @@ class LDD extends Aihrus_Common {
 
 	public static function actions() {
 		// fixme add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
+
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'styles' ) );
 		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
@@ -414,12 +412,97 @@ class LDD extends Aihrus_Common {
 		add_action( 'after_setup_theme', array( 'post_status_prepare', 'init' ) );
 		add_action( 'init', array( __CLASS__, 'init' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'styles' ) );
+        add_action( 'admin_head-post-new.php', array ( __CLASS__, 'hide_publish_button' ) );
+        add_action( 'admin_head-post.php', array ( __CLASS__, 'hide_publish_button' ) );
+        add_action( 'admin_head-post-new.php', array ( __CLASS__, 'load_gettext_filters' ) );
+        add_action( 'admin_head-post.php', array ( __CLASS__, 'load_gettext_filters' ) );
+	}
+
+
+	public static function filters() {
+		add_filter( 'gettext', array( __CLASS__, 'gettext_global' ) );
+		add_filter( 'plugin_action_links', array( __CLASS__, 'plugin_action_links' ), 10, 2 );
+		add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
+		add_filter( 'pre_update_option_active_plugins', array( __CLASS__, 'pre_update_option_active_plugins' ), 10, 2 );
 	}
 
 
 	public static function remove_meta_box() {
 		remove_meta_box( 'commentstatusdiv', LDD::PT, 'normal' );
 		remove_meta_box( 'slugdiv', LDD::PT, 'normal' );
+	}
+
+
+	public static function load_gettext_filters() {
+		global $post_type, $wp_scripts;
+
+		if ( ! in_array( $post_type, array( LDD::PT ) ) )
+			return;
+
+		$extra = $wp_scripts->registered['post']->extra['data'];
+		$extra = self::gettext_status( $extra );
+
+		$wp_scripts->registered['post']->extra['data'] = $extra;
+		
+		add_filter( 'gettext', array( __CLASS__, 'gettext_status' ) );
+	}
+
+
+	public static function gettext_status( $translated ) {
+		$translated = preg_replace( '#\bSave as Pending\b#', 'Save Update', $translated );
+		$translated = preg_replace( '#\bPending Review\b#', 'Awaiting Assignment', $translated );
+		$translated = preg_replace( '#\bSave Draft\b#', 'Save Update', $translated );
+		$translated = preg_replace( '#\bPublish\b#', 'Delivered', $translated );
+		$translated = preg_replace( '#\bPublished\b#', 'Delivered', $translated );
+
+		return $translated;
+	}
+
+
+	public static function gettext_global( $translated ) {
+		static $do_it;
+
+		if ( is_null( $do_it ) ) {
+			// why is this so dificult to figure what post_type we're currently on?
+			$post_type = isset( $_GET['post_type'] ) ? esc_attr( $_GET['post_type'] ) : false;
+			if ( ! $post_type ) {
+				global $post;
+				if ( ! is_null( $post ) )
+					$post_type = get_the_ID() ? get_post_type( get_the_ID() ) : false;
+			}
+
+			if ( $post_type )
+				$do_it = in_array( $post_type, array( LDD::PT ) );
+		}
+
+		if ( ! $do_it )
+			return $translated;
+
+		$translated = preg_replace( '#\bAuthor\b#', 'Client', $translated );
+
+		return $translated;
+	}
+
+
+	public static function hide_publish_button() {
+		global $post_type;
+
+		if ( ! in_array( $post_type, array( LDD::PT ) ) )
+			return;
+
+		self::$scripts[] = "
+			<script type='text/javascript'>
+				jQuery(document).ready( function($){
+					$('#publishing-action #publish').hide();
+					$('#post_status').change( function(){
+						post_status = jQuery('#post_status').val();
+						if ( 'publish' == post_status ) {
+							jQuery('#publishing-action #publish').show();
+						}
+					});
+				});
+			</script>
+		";
 	}
 
 }

@@ -6,6 +6,7 @@
 * Add delivery statuses - assigned, prepare, enroute, delivered
 * Disable donate and premium links
 * Hide visibility options in Publish box
+* Improve labeling and update handling
 * Initial code release 
 * Remove delivered status
 * Remove mass processor
