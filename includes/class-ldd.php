@@ -517,7 +517,7 @@ class LDD extends Aihrus_Common {
 	 * @param string $note The note to store
 	 * @return int The new note ID
 	 */
-	function ldd_insert_delivery_note( $delivery_id = 0, $note = '' ) {
+	public static function insert_delivery_note( $delivery_id = 0, $note = '' ) {
 		if ( empty( $delivery_id ) )
 			return false;
 
