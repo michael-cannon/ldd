@@ -52,10 +52,6 @@ class LDD extends Aihrus_Common {
 
 		self::actions();
 
-		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
-		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
-		add_action( 'init', array( __CLASS__, 'init' ) );
-		// fixme add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
 		add_shortcode( 'ldd_shortcode', array( __CLASS__, 'ldd_shortcode' ) );
 	}
 
@@ -74,8 +70,6 @@ class LDD extends Aihrus_Common {
 	public static function admin_menu() {
 		self::remove_meta_box();
 
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'styles' ) );
-
 		// fixme self::$menu_id = add_management_page( esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd' ), esc_html__( 'Legal Document Deliveries - Core Processor', 'ldd' ), 'manage_options', self::ID, array( __CLASS__, 'user_interface' ) );
 
 		// fixme add_action( 'admin_print_scripts-' . self::$menu_id, array( __CLASS__, 'scripts' ) );
@@ -92,10 +86,6 @@ class LDD extends Aihrus_Common {
 		self::$cpt_tags     = self::PT . '-post_tag';
 
 		self::init_post_type();
-
-		if ( self::do_load() ) {
-			self::styles();
-		}
 	}
 
 
@@ -415,9 +405,15 @@ class LDD extends Aihrus_Common {
 
 
 	public static function actions() {
+		// fixme add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'styles' ) );
+		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		add_action( 'after_setup_theme', array( 'post_status_assigned', 'init' ) );
 		add_action( 'after_setup_theme', array( 'post_status_enroute', 'init' ) );
 		add_action( 'after_setup_theme', array( 'post_status_prepare', 'init' ) );
+		add_action( 'init', array( __CLASS__, 'init' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'styles' ) );
 	}
 
 

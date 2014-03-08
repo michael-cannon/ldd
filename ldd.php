@@ -85,9 +85,6 @@ add_action( 'plugins_loaded', 'ldd_init', 99 );
  */
 if ( ! function_exists( 'ldd_init' ) ) {
 	function ldd_init() {
-		if ( ! is_admin() )
-			return;
-
 		if ( LDD::version_check() ) {
 			global $LDD;
 			if ( is_null( $LDD ) )
